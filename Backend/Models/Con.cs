@@ -1,23 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Backend.Models;
 
 public class Con
 {
-   
-[Key]
-[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-public int ConId { get; set; } 
+    public int ConId { get; set; }
 
-// [ForeignKey("Problem")]
-// public int ProblemId { get; set; }
-    
-    [Required] public string Title { get; set; } = default!;
+    public string Title { get; set; } = default!;
 
-//
-// [NotMapped]
-// public List<ConLike> Likes { get; set; } = default!;
-
-public List<userId>? LikesList { get; set; }
-
+    public List<userId>? LikesList { get; set; }
 }

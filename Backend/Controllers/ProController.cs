@@ -21,7 +21,6 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // GET: api/Pro
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pro>>> GetPro()
         {

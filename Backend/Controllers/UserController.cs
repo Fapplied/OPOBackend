@@ -21,25 +21,20 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-          if (_context.User == null)
-          {
-              return NotFound();
-          }
-            return await _context.User.ToListAsync();
-        }
+            if (_context.User == null)
+            {
+                return NotFound();
+            }
 
-        // GET: api/User/5
+           return await _context.User.Include(r => r.ProfilePicture).ToListAsync();
+        }
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-          if (_context.User == null)
-          {
-              return NotFound();
-          }
             var user = await _context.User.FindAsync(id);
 
             if (user == null)
@@ -47,63 +42,25 @@ namespace Backend.Controllers
                 return NotFound();
             }
 
-            return user;
+            return _context.User.Include(r => r.ProfilePicture).First(r => r.UserId == id);
         }
 
-        // PUT: api/User/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
-        {
-            if (id != user.UserId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/User
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(AddUserRequest addUserRequest)
         {
-          if (_context.User == null)
-          {
-              return Problem("Entity set 'OPODB.User'  is null.");
-          }
+            var user = new User
+            {
+                Name = addUserRequest.Name
+            };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 
-        // DELETE: api/User/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            if (_context.User == null)
-            {
-                return NotFound();
-            }
             var user = await _context.User.FindAsync(id);
             if (user == null)
             {

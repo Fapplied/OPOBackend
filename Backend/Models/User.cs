@@ -1,18 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Backend.Models;
 
 public class User
 {
-   
-public string Name { get; set; }
+    public int UserId { get; set; } = default!;
 
-public ProfilePicture? ProfilePicture { get; set; }
+    public string Name { get; set; }
 
-[Required]
-[Key]
-public int UserId { get; set;}  = default!;
+    public ProfilePicture? ProfilePicture { get; set; }
 
-public List<Problem>? ProblemList { get; set; }
-
+    // public List<Problem>? ProblemList { get; set; }
 }
