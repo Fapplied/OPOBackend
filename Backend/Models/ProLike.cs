@@ -6,12 +6,13 @@ namespace Backend.Models;
 [Keyless]
 public class ProLike
 {   
-    [Required]
-    [ForeignKey("User")]
-    public int UserId { get; set; }
+    // [Required]
+    // [ForeignKey("User")]
+    // public int UserId { get; set; }
+    //
     
-    [Required]
-    [ForeignKey("Pro")]
-    public int ProId { get; set; }
+    // [Required]
+    // [ForeignKey("Pro")]
+    // public int ProId { get; set; }
 
 }

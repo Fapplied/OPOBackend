@@ -9,13 +9,15 @@ public class Con
 [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 public int ConId { get; set; } 
 
-[ForeignKey("Problem")]
-public int ProblemId { get; set; }
+// [ForeignKey("Problem")]
+// public int ProblemId { get; set; }
+    
+    [Required] public string Title { get; set; } = default!;
 
-[Required]
-public string Title { get; set; }
+//
+// [NotMapped]
+// public List<ConLike> Likes { get; set; } = default!;
 
-[NotMapped]
-public List<ConLike> Likes { get; set; } = default!;
+public List<userId>? LikesList { get; set; }
 
 }

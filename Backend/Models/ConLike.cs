@@ -7,11 +7,11 @@ namespace Backend.Models;
 public class ConLike
 {   
     [Required]
-    [ForeignKey("User")]
     public int UserId { get; set; }
     
-    [Required]
-    [ForeignKey("Con")]
-    public int ConId { get; set; }
+    
+    // [Required]
+    // [ForeignKey("Con")]
+    // public int ConId { get; set; }
 
 }

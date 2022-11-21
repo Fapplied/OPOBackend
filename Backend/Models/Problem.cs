@@ -10,13 +10,12 @@ public class Problem
     public int ProblemId { get; set; }
     
     [Required]
-    [ForeignKey("User")]
-    public int UserId { get; set; }
+    public User User { get; set; } = default!;
     
     [Required]
     public string Title { get; set; } = default!;
     
-    public List<Pro> ProList { get; set; } = default!;
+    public List<Pro>? ProList { get; set; }
     
-    public List<Con> Conlist { get; set; } = default!;
+    public List<Con>? Conlist { get; set; }
 }

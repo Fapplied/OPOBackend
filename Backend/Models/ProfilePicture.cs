@@ -3,13 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Models;
-[Keyless]
+
 public class ProfilePicture
 {
-    [Required]
-    [ForeignKey("User")]
-    public int UserId { get; set; }
-    
+    public int Id { get; set; }
+
     [Required]
     public string Url { get; set; }
 }
