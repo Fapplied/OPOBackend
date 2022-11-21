@@ -6,8 +6,8 @@ namespace Backend.Models;
 [Keyless]
 public class ConLike
 {   
-    [Required]
-    public int UserId { get; set; }
+    // [Required]
+    // public int UserId { get; set; }
     
     
     // [Required]
