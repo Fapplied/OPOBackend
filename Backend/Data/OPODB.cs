@@ -16,8 +16,6 @@ public class OPODB:DbContext
     {
     }
     
-
-
     public DbSet<User> User { get; set; } = default!;
     public DbSet<ProfilePicture> ProfilePicture { get; set; } = default!;
     public DbSet<Problem> Problem { get; set; } = default!;
