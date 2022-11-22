@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.Service;
 
 namespace Backend.Controllers
 {
@@ -21,25 +22,26 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProfilePicture>>> GetProfilePicture()
-        {
-            if (_context.ProfilePicture == null)
-            {
-                return NotFound();
-            }
-
-            return await _context.ProfilePicture.ToListAsync();
-        }
+        // [HttpGet ("{id}")]
+        // public async Task<ActionResult<IEnumerable<ProfilePicture>>> GetProfilePicture(int id)
+        // {
+        //     if (_context.ProfilePicture == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //
+        //     return await _context.ProfilePicture.ToListAsync();
+        // }
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<ProfilePicture>> PostProfilePicture(int id)
+        public async Task<ActionResult<ProfilePicture>> PostProfilePicture(IFormFile formFile, int id)
         {
+           var result = await BlobFunctions.Upload(formFile, id);
             // var user = _context.User.Include(r => r.ProfilePicture).SingleOrDefault(r => r.UserId == id);
             // user.ProfilePicture.Url = 
             // await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProfilePicture", new { id = id });
+            return CreatedAtAction("PostProfilePicture", new { id, URL = result });
         }
 
         [HttpDelete("{id}")]
