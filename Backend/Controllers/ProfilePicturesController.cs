@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,46 +23,33 @@ namespace Backend.Controllers
             _context = context;
         }
 
-        // [HttpGet ("{id}")]
-        // public async Task<ActionResult<IEnumerable<ProfilePicture>>> GetProfilePicture(int id)
-        // {
-        //     if (_context.ProfilePicture == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //
-        //     return await _context.ProfilePicture.ToListAsync();
-        // }
+        [HttpGet ("{id}")]
+        public async Task<ActionResult<IEnumerable<BlobItem>>> GetProfilePicture(int id)
+        {
+            var res = await BlobFunctions.Get(id);
+            return Ok(res);
+        }
 
         [HttpPost("{id}")]
         public async Task<ActionResult<ProfilePicture>> PostProfilePicture(IFormFile formFile, int id)
         {
-           var result = await BlobFunctions.Upload(formFile, id);
-            // var user = _context.User.Include(r => r.ProfilePicture).SingleOrDefault(r => r.UserId == id);
-            // user.ProfilePicture.Url = 
-            // await _context.SaveChangesAsync();
-
-            return CreatedAtAction("PostProfilePicture", new { id, URL = result });
+           var result = await BlobFunctions.Post(formFile, id);
+           
+           return CreatedAtAction("PostProfilePicture", new ProfilePicture(){Id = id, Url = result});
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProfilePicture(int id)
         {
-            var profilePicture = await _context.ProfilePicture.FindAsync(id);
-            if (profilePicture == null)
+            var result = await BlobFunctions.Delete(id);
+            if (result.Contains("Deleted"))
             {
-                return NotFound();
+                return Ok(result);
             }
-
-            _context.ProfilePicture.Remove(profilePicture);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ProfilePictureExists(int id)
-        {
-            return (_context.ProfilePicture?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+            
+            return NotFound(result);
+            
+    }
+        
     }
 }
