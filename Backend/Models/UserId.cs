@@ -1,6 +1,6 @@
 namespace Backend.Models;
 
-public class userId
+public class UserId
 {
     public int Id { get; set; }
 }

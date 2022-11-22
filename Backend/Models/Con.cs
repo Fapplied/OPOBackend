@@ -8,5 +8,5 @@ public class Con
 
     public string Title { get; set; } = default!;
 
-    public List<userId>? LikesList { get; set; }
+    public List<UserId>? LikesList { get; set; }
 }

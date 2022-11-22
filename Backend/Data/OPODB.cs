@@ -23,5 +23,5 @@ public class OPODB:DbContext
     // public DbSet<ConLike> ConLike { get; set;  }
     public DbSet<Pro> Pro { get; set;  }
     public DbSet<Con> Con { get; set;  }
-    public DbSet<userId> Likes { get; set; }
+    public DbSet<UserId> Likes { get; set; }
 }
