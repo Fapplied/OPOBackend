@@ -12,11 +12,11 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProblemController : ControllerBase
+    public class ProblemsController : ControllerBase
     {
         private readonly OPODB _context;
 
-        public ProblemController(OPODB context)
+        public ProblemsController(OPODB context)
         {
             _context = context;
         }

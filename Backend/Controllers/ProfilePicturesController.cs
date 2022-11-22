@@ -12,11 +12,11 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProfilePictureController : ControllerBase
+    public class ProfilePicturesController : ControllerBase
     {
         private readonly OPODB _context;
 
-        public ProfilePictureController(OPODB context)
+        public ProfilePicturesController(OPODB context)
         {
             _context = context;
         }
