@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(OPODB))]
-    partial class OPODBModelSnapshot : ModelSnapshot
+    [Migration("20221122125839_RearrangedProblemProConRelationship")]
+    partial class RearrangedProblemProConRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +32,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConId"), 1L, 1);
 
-                    b.Property<int?>("ProblemId")
+                    b.Property<int>("ProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -52,7 +54,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProId"), 1L, 1);
 
-                    b.Property<int?>("ProblemId")
+                    b.Property<int>("ProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -152,22 +154,30 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Con", b =>
                 {
-                    b.HasOne("Backend.Models.Problem", null)
-                        .WithMany("Conlist")
-                        .HasForeignKey("ProblemId");
+                    b.HasOne("Backend.Models.Problem", "Problem")
+                        .WithMany()
+                        .HasForeignKey("ProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Problem");
                 });
 
             modelBuilder.Entity("Backend.Models.Pro", b =>
                 {
-                    b.HasOne("Backend.Models.Problem", null)
-                        .WithMany("ProList")
-                        .HasForeignKey("ProblemId");
+                    b.HasOne("Backend.Models.Problem", "Problem")
+                        .WithMany()
+                        .HasForeignKey("ProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Problem");
                 });
 
             modelBuilder.Entity("Backend.Models.Problem", b =>
                 {
                     b.HasOne("Backend.Models.User", "User")
-                        .WithMany("ProblemList")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -203,18 +213,6 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Pro", b =>
                 {
                     b.Navigation("LikesList");
-                });
-
-            modelBuilder.Entity("Backend.Models.Problem", b =>
-                {
-                    b.Navigation("Conlist");
-
-                    b.Navigation("ProList");
-                });
-
-            modelBuilder.Entity("Backend.Models.User", b =>
-                {
-                    b.Navigation("ProblemList");
                 });
 #pragma warning restore 612, 618
         }

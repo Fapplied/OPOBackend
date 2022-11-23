@@ -11,5 +11,5 @@ public class User
 
     public ProfilePicture? ProfilePicture { get; set; }
 
-    // public List<Problem>? ProblemList { get; set; }
+    public List<Problem>? ProblemList { get; set; }
 }
