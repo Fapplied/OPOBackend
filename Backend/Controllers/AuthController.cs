@@ -26,19 +26,26 @@ public class Auth:ControllerBase
         [HttpGet]
         public async Task<IActionResult> GoogleResponse()
         {
-            var result = await HttpContext.AuthenticateAsync();
+            try
+            {
+                var result = await HttpContext.AuthenticateAsync();
 
-            var claims = result.Principal.Identities.FirstOrDefault()
-                .Claims.Select(claim => new
-                {
-                    claim.Properties,
-                    claim.Subject,
-                    claim.Issuer,
-                    claim.OriginalIssuer,
-                    claim.Type,
-                    claim.Value
-                });
+                var claims = result.Principal.Identities.FirstOrDefault()
+                    .Claims.Select(claim => new
+                    {
+                        claim.Properties,
+                        claim.Subject,
+                        claim.Issuer,
+                        claim.OriginalIssuer,
+                        claim.Type,
+                        claim.Value
+                    });
 
-            return Ok(claims);
+                return Ok(claims);
+            }
+            catch (Exception e)
+            {
+                return NotFound(e);
+            }
         }
     }
