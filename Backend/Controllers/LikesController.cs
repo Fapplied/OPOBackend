@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Backend.Data;
+using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Controllers
 {
@@ -11,36 +9,103 @@ namespace Backend.Controllers
     [ApiController]
     public class LikesController : ControllerBase
     {
-        // GET: api/Likes
+        private readonly OPODB _context;
+
+        public LikesController(OPODB context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<Like>> GetLikes()
         {
-            return new string[] { "value1", "value2" };
+            return await _context.Likes.ToListAsync();
         }
 
-        // GET: api/Likes/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("pro/{id}")]
+        public async Task<ActionResult<int>> GetProLikes(int id)
         {
-            return "value";
+            var pro = _context.Pro
+                .Include(r => r.LikesList)
+                .SingleOrDefault(r => r.ProId == id);
+
+            if (pro == null)
+            {
+                return NotFound();
+            }
+
+            return pro.LikesList.Count;
         }
 
-        // POST: api/Likes
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpGet("con/{id}")]
+        public async Task<ActionResult<int>> GetConLikes(int id)
         {
+            var con = _context.Con
+                .Include(r => r.LikesList)
+                .SingleOrDefault(r => r.ConId == id);
+
+            if (con == null)
+            {
+                return NotFound();
+            }
+
+            return con.LikesList.Count;
         }
 
-        // PUT: api/Likes/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("pro")]
+        public async Task<ActionResult<Like>> PostProLike(int proId, int userId)
         {
+            var pro = _context.Pro
+                .Include(r => r.LikesList)
+                .Include(r => r.Problem)
+                .Single(r => r.ProId == proId);
+
+            var like = new Like
+            {
+                UserId = userId
+            };
+
+            pro.LikesList?.Add(like);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetProLikes", new { id = userId }, like);
         }
 
-        // DELETE: api/Likes/5
+        [HttpPost("con")]
+        public async Task<ActionResult<Like>> PostConLike(int conId, int userId)
+        {
+            var con = _context.Pro
+                .Include(r => r.LikesList)
+                .Include(r => r.Problem)
+                .Single(r => r.ProId == conId);
+
+            var like = new Like
+            {
+                UserId = userId
+            };
+
+            con.LikesList?.Add(like);
+
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetConLikes", new { id = userId }, like);
+        }
+
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var like = await _context.Likes.FindAsync(id);
+
+            if (like == null)
+            {
+                return NotFound();
+            }
+
+            _context.Likes.Remove(like);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

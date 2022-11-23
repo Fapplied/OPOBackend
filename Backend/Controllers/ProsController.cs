@@ -52,15 +52,16 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<Pro>> PostPro(int problemId, AddProRequest addProRequest)
         {
-            var problem = _context.Problem.Single(r => r.ProblemId == problemId);
+            var problem = _context.Problem
+                .Include(r => r.ProList)
+                .Single(r => r.ProblemId == problemId);
 
             var pro = new Pro
             {
                 Title = addProRequest.Advantage,
-                Problem = problem
             };
-
-            _context.Pro.Add(pro);
+            
+            problem.ProList.Add(pro);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPro", new { id = pro.ProId }, pro);

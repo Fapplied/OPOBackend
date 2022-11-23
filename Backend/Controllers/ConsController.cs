@@ -52,15 +52,16 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<Con>> PostCon(int problemId, AddConRequest addConRequest)
         {
-            var problem = _context.Problem.Single(r => r.ProblemId == problemId);
+            var problem = _context.Problem
+                .Include(r => r.ConList)
+                .Single(r => r.ProblemId == problemId);
             
             var con = new Con
             {
                 Title = addConRequest.Disadvantage,
-                Problem = problem
             };
             
-            _context.Con.Add(con);
+            problem.ConList.Add(con);
             await _context.SaveChangesAsync();
             
             return CreatedAtAction("GetCon", new { id = con.ConId }, con);

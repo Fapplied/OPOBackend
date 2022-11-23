@@ -48,7 +48,7 @@ namespace Backend.Controllers
             {
                 return NotFound();
             }
-            
+
             return new ProblemDTO
             {
                 ProblemId = problem.ProblemId,
@@ -62,20 +62,21 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<Problem>> PostProblem(int userId, AddProblemRequest addProblemRequest)
         {
-            var user = _context.User.Single(r => r.UserId == userId);
+            var user = _context.User
+                .Include(r => r.ProblemList)
+                .Single(r => r.UserId == userId);
             
             var problem = new Problem
             {
-                User = user,
                 Title = addProblemRequest.Title
             };
-
-            _context.Problem.Add(problem);
+        
+            user.ProblemList.Add(problem);
             await _context.SaveChangesAsync();
-
+        
             return CreatedAtAction("GetProblem", new { id = problem.ProblemId }, problem);
         }
-
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProblem(int id)
         {
