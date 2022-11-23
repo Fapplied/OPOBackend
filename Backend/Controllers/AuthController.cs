@@ -23,7 +23,7 @@ public class Auth:ControllerBase
         }
 
         [Route("google-response")]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> GoogleResponse()
         {
             var result = await HttpContext.AuthenticateAsync();
