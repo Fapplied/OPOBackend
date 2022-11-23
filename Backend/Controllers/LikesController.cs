@@ -60,25 +60,38 @@ namespace Backend.Controllers
                 .Include(r => r.Problem)
                 .Single(r => r.ProId == proId);
 
+            var likedAlready = pro.LikesList.SingleOrDefault(r => r.UserId == userId);
+            
+            if (likedAlready!= null)
+            {
+                return BadRequest();
+            }
+            
             var like = new Like
             {
                 UserId = userId
             };
 
             pro.LikesList?.Add(like);
-
             await _context.SaveChangesAsync();
-
+            
             return CreatedAtAction("GetProLikes", new { id = userId }, like);
         }
 
         [HttpPost("con")]
         public async Task<ActionResult<Like>> PostConLike(int conId, int userId)
         {
-            var con = _context.Pro
+            var con = _context.Con
                 .Include(r => r.LikesList)
                 .Include(r => r.Problem)
-                .Single(r => r.ProId == conId);
+                .Single(r => r.ConId == conId);
+            
+            var likedAlready = con.LikesList.SingleOrDefault(r => r.UserId == userId);
+            
+            if (likedAlready!= null)
+            {
+                return BadRequest();
+            }
 
             var like = new Like
             {
