@@ -14,6 +14,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OPODB>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OPODB") ?? throw new InvalidOperationException("Connection string 'OPODB' not found.")));
 
+var configuration = builder.Configuration;
+var services = builder.Services;
+
+services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+});
+
 
 
 var app = builder.Build();
