@@ -22,7 +22,7 @@ namespace Backend.Controllers
             var problem = await _context.Problem
                 .Include(r => r.User)
                 .Include(r => r.ProList)
-                .Include(r => r.Conlist)
+                .Include(r => r.ConList)
                 .ToListAsync();
 
             return problem.Select(result => new ProblemDTO
@@ -31,7 +31,7 @@ namespace Backend.Controllers
                 UserId = result.User.UserId,
                 Title = result.Title,
                 ProList = GetPros().Where(r => r.ProblemId == result.ProblemId).ToList(),
-                Conlist = GetCons().Where(r => r.ProblemId == result.ProblemId).ToList()
+                ConList = GetCons().Where(r => r.ProblemId == result.ProblemId).ToList()
             });
         }
 
@@ -40,7 +40,7 @@ namespace Backend.Controllers
         {
             var problem = _context.Problem
                 .Include(r => r.User)
-                .Include(r => r.Conlist)
+                .Include(r => r.ConList)
                 .Include(r => r.ProList)
                 .SingleOrDefault(r => r.ProblemId == id);
 
@@ -55,7 +55,7 @@ namespace Backend.Controllers
                 UserId = problem.User.UserId,
                 Title = problem.Title,
                 ProList = GetPros().Where(r => r.ProblemId == problem.ProblemId).ToList(),
-                Conlist = GetCons().Where(r => r.ProblemId == problem.ProblemId).ToList()
+                ConList = GetCons().Where(r => r.ProblemId == problem.ProblemId).ToList()
             };
         }
 

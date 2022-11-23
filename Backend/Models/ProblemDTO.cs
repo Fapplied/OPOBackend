@@ -10,5 +10,5 @@ public class ProblemDTO
     
     public List<ProDTO>? ProList { get; set; }
     
-    public List<ConsDTO>? Conlist { get; set; }
+    public List<ConsDTO>? ConList { get; set; }
 }

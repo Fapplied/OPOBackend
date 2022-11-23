@@ -13,5 +13,5 @@ public class Problem
     
     public List<Pro>? ProList { get; set; }
     
-    public List<Con>? Conlist { get; set; }
+    public List<Con>? ConList { get; set; }
 }
