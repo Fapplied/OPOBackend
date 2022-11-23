@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
@@ -22,27 +17,28 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            if (_context.User == null)
-            {
-                return NotFound();
-            }
-
-           return await _context.User.Include(r => r.ProfilePicture).ToListAsync();
+            return await _context.User
+                .Include(r => r.ProfilePicture)
+                .Include(r => r.ProblemList)
+                .ToListAsync();
         }
         
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-            var user = await _context.User.FindAsync(id);
+            var user = _context.User
+                .Include(r => r.ProfilePicture)
+                .Include(r=> r.ProblemList)
+                .SingleOrDefault(r => r.UserId == id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return _context.User.Include(r => r.ProfilePicture).First(r => r.UserId == id);
+            return user;
         }
 
         [HttpPost]
@@ -52,6 +48,7 @@ namespace Backend.Controllers
             {
                 Name = addUserRequest.Name
             };
+            
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -62,6 +59,7 @@ namespace Backend.Controllers
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.User.FindAsync(id);
+            
             if (user == null)
             {
                 return NotFound();
@@ -71,11 +69,6 @@ namespace Backend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool UserExists(int id)
-        {
-            return (_context.User?.Any(e => e.UserId == id)).GetValueOrDefault();
         }
     }
 }

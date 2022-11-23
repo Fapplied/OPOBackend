@@ -24,11 +24,6 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProfilePicture>>> GetProfilePicture()
         {
-            if (_context.ProfilePicture == null)
-            {
-                return NotFound();
-            }
-
             return await _context.ProfilePicture.ToListAsync();
         }
 

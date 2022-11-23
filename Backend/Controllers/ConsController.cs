@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
@@ -20,91 +15,62 @@ namespace Backend.Controllers
         {
             _context = context;
         }
-
-        // GET: api/Con
+        
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Con>>> GetCon()
+        public async Task<IEnumerable<ConsDTO>> GetCons()
         {
-          if (_context.Con == null)
-          {
-              return NotFound();
-          }
-            return await _context.Con.ToListAsync();
+            var con =  await _context.Con.Include(r => r.Problem).ToListAsync();
+            
+            return con.Select(result => new ConsDTO
+            {
+                ConId = result.ConId,
+                Title = result.Title,
+                ProblemId = result.Problem.ProblemId,
+                ProblemTitle = result.Problem.Title,
+            });
         }
 
-        // GET: api/Con/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Con>> GetCon(int id)
+        public async Task<ActionResult<ConsDTO>> GetCon(int id)
         {
-          if (_context.Con == null)
-          {
-              return NotFound();
-          }
-            var con = await _context.Con.FindAsync(id);
+            var con = _context.Con.Include(r => r.Problem).SingleOrDefault(r => r.ConId == id);
 
             if (con == null)
             {
                 return NotFound();
             }
 
-            return con;
+            return new ConsDTO
+            {
+                ConId = con.ConId,
+                Title = con.Title,
+                ProblemId = con.Problem.ProblemId,
+                ProblemTitle = con.Problem.Title,
+            };
         }
 
-        // PUT: api/Con/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCon(int id, Con con)
-        {
-            if (id != con.ConId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(con).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ConExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Con
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Con>> PostCon(Con con)
+        public async Task<ActionResult<Con>> PostCon(int problemId, AddConRequest addConRequest)
         {
-          if (_context.Con == null)
-          {
-              return Problem("Entity set 'OPODB.Con'  is null.");
-          }
+            var problem = _context.Problem.Single(r => r.ProblemId == problemId);
+            
+            var con = new Con
+            {
+                Title = addConRequest.Disadvantage,
+                Problem = problem
+            };
+            
             _context.Con.Add(con);
             await _context.SaveChangesAsync();
-
+            
             return CreatedAtAction("GetCon", new { id = con.ConId }, con);
         }
 
-        // DELETE: api/Con/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCon(int id)
         {
-            if (_context.Con == null)
-            {
-                return NotFound();
-            }
             var con = await _context.Con.FindAsync(id);
+            
             if (con == null)
             {
                 return NotFound();
@@ -114,11 +80,6 @@ namespace Backend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ConExists(int id)
-        {
-            return (_context.Con?.Any(e => e.ConId == id)).GetValueOrDefault();
         }
     }
 }

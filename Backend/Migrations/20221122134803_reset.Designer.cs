@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(OPODB))]
-    partial class OPODBModelSnapshot : ModelSnapshot
+    [Migration("20221122134803_reset")]
+    partial class reset
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,7 +32,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ConId"), 1L, 1);
 
-                    b.Property<int?>("ProblemId")
+                    b.Property<int>("ProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -52,7 +54,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProId"), 1L, 1);
 
-                    b.Property<int?>("ProblemId")
+                    b.Property<int>("ProblemId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -152,16 +154,24 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Con", b =>
                 {
-                    b.HasOne("Backend.Models.Problem", null)
+                    b.HasOne("Backend.Models.Problem", "Problem")
                         .WithMany("Conlist")
-                        .HasForeignKey("ProblemId");
+                        .HasForeignKey("ProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Problem");
                 });
 
             modelBuilder.Entity("Backend.Models.Pro", b =>
                 {
-                    b.HasOne("Backend.Models.Problem", null)
+                    b.HasOne("Backend.Models.Problem", "Problem")
                         .WithMany("ProList")
-                        .HasForeignKey("ProblemId");
+                        .HasForeignKey("ProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Problem");
                 });
 
             modelBuilder.Entity("Backend.Models.Problem", b =>

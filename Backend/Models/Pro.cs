@@ -8,6 +8,8 @@ public class Pro
     public int ProId { get; set; }
 
     public string Title { get; set; } = default!;
+    
+    public Problem Problem { get; set; } = default!;
 
     public List<UserId>? LikesList { get; set; }
 }

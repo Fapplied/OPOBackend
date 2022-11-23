@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
@@ -22,88 +17,60 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pro>>> GetPro()
+        public async Task<IEnumerable<ProDTO>> GetPro()
         {
-          if (_context.Pro == null)
-          {
-              return NotFound();
-          }
-            return await _context.Pro.ToListAsync();
+            var pro = await _context.Pro.Include(r => r.Problem).ToListAsync();
+            
+            return pro.Select(result => new ProDTO
+            {
+                ProId = result.ProId,
+                Title = result.Title,
+                ProblemId = result.Problem.ProblemId,
+                ProblemTitle = result.Problem.Title,
+            });
         }
 
-        // GET: api/Pro/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pro>> GetPro(int id)
+        public async Task<ActionResult<ProDTO>> GetPros(int id)
         {
-          if (_context.Pro == null)
-          {
-              return NotFound();
-          }
-            var pro = await _context.Pro.FindAsync(id);
+            var pro = _context.Pro.Include(r => r.Problem).SingleOrDefault(r => r.ProId == id);
 
             if (pro == null)
             {
                 return NotFound();
             }
 
-            return pro;
+            return new ProDTO
+            {
+                ProId = pro.ProId,
+                Title = pro.Title,
+                ProblemId = pro.Problem.ProblemId,
+                ProblemTitle = pro.Problem.Title,
+            };
         }
 
-        // PUT: api/Pro/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPro(int id, Pro pro)
-        {
-            if (id != pro.ProId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(pro).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Pro
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Pro>> PostPro(Pro pro)
+        public async Task<ActionResult<Pro>> PostPro(int problemId, AddProRequest addProRequest)
         {
-          if (_context.Pro == null)
-          {
-              return Problem("Entity set 'OPODB.Pro'  is null.");
-          }
+            var problem = _context.Problem.Single(r => r.ProblemId == problemId);
+
+            var pro = new Pro
+            {
+                Title = addProRequest.Advantage,
+                Problem = problem
+            };
+
             _context.Pro.Add(pro);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPro", new { id = pro.ProId }, pro);
         }
 
-        // DELETE: api/Pro/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePro(int id)
         {
-            if (_context.Pro == null)
-            {
-                return NotFound();
-            }
             var pro = await _context.Pro.FindAsync(id);
+            
             if (pro == null)
             {
                 return NotFound();
@@ -113,11 +80,6 @@ namespace Backend.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ProExists(int id)
-        {
-            return (_context.Pro?.Any(e => e.ProId == id)).GetValueOrDefault();
         }
     }
 }
