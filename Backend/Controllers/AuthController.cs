@@ -17,7 +17,7 @@ public class Auth:ControllerBase
          [HttpGet]
         public IActionResult GoogleLogin()
         {
-            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
+            var properties = new AuthenticationProperties { RedirectUri = "opobackend.azurewebsites.net/auth/google-response" };
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
