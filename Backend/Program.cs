@@ -1,4 +1,5 @@
 using Backend.Data;
+using Backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +25,7 @@ services.AddAuthentication().AddGoogle(googleOptions =>
     googleOptions.CallbackPath = configuration["Authentication:Google:CallbackPath"];
 });
 
+services.AddIdentity<User, User>();
 
 
 var app = builder.Build();
