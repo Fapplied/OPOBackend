@@ -80,7 +80,7 @@ namespace Backend.Controllers
             {
                 var safeText =  await  client.GetStreamAsync(URL + addProblemRequest.Title);
                 var profanityApiResponse = await JsonSerializer.DeserializeAsync<ProfanityApiResponse>(safeText);
-                problemTitleToBeAdded = profanityApiResponse?.Text;
+                problemTitleToBeAdded = profanityApiResponse.Text;
 
 
             }
