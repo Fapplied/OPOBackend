@@ -6,4 +6,6 @@ public class AddUserRequest
 {
     [Required] public string Name { get; set; }
     [Required] public string GoogleId { get; set; }
+    
+    [Required] public string Token { get; set; }
 }

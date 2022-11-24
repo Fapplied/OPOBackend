@@ -2,9 +2,9 @@ using Google.Apis.Auth;
 
 namespace Backend.Service;
 
-public class VerifyToken
+public static class VerifyToken
 {
-    public async Task<GoogleJsonWebSignature.Payload>  VerifyGoogleTokenId(string token){    
+    public static async Task<GoogleJsonWebSignature.Payload>  VerifyGoogleTokenId(string token){    
         try
         {  
             // uncomment these lines if you want to add settings: 
@@ -16,12 +16,19 @@ public class VerifyToken
             // GoogleJsonWebSignature.Payload payload =  await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
 
             // Or Get the payload without settings.
-            GoogleJsonWebSignature.Payload payload =  await GoogleJsonWebSignature.ValidateAsync(token);
-
+            token += "lot of wierd";
+            var payload =  await GoogleJsonWebSignature.ValidateAsync(token);
+            
+            // if (payload is null)
+            // {
+            //     
+            // }
             return payload;
         }
-        catch (System.Exception)
+        catch (Exception)
         {
+            
+            throw new ArgumentException("Missing Legit Token");
             Console.WriteLine("invalid google token");
 
         }

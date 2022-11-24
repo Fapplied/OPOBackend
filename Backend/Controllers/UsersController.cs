@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
+using Backend.Service;
 
 namespace Backend.Controllers
 {
@@ -44,12 +45,19 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(AddUserRequest addUserRequest)
         {
+            await VerifyToken.VerifyGoogleTokenId(addUserRequest.Token);
+            // return Ok(test);
+            if (_context.User.SingleOrDefault(r => r.GoogleId == addUserRequest.GoogleId) != null)
+            {
+               return Ok();
+            }
+            
             var user = new User
             {
                 GoogleId = addUserRequest.GoogleId,
                 Name = addUserRequest.Name
             };
-
+            
             _context.User.Add(user);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);

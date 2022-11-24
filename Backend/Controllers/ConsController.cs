@@ -19,7 +19,9 @@ namespace Backend.Controllers
         [HttpGet]
         public async Task<IEnumerable<ConsDTO>> GetCons()
         {
-            var con =  await _context.Con.Include(r => r.Problem).ToListAsync();
+            var con =  await _context.Con
+                .Include(r => r.Problem)
+                .ToListAsync();
             
             return con.Select(result => new ConsDTO
             {
@@ -33,7 +35,9 @@ namespace Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ConsDTO>> GetCon(int id)
         {
-            var con = _context.Con.Include(r => r.Problem).SingleOrDefault(r => r.ConId == id);
+            var con = _context.Con
+                .Include(r => r.Problem)
+                .SingleOrDefault(r => r.ConId == id);
 
             if (con == null)
             {
