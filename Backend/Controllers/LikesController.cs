@@ -23,7 +23,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("pro/{id}")]
-        public async Task<ActionResult<int>> GetProLikes(int id)
+        public async Task<ActionResult<IEnumerable<Like>>> GetProLikes(int id)
         {
             var pro = _context.Pro
                 .Include(r => r.LikesList)
@@ -34,11 +34,11 @@ namespace Backend.Controllers
                 return NotFound();
             }
 
-            return pro.LikesList.Count;
+            return pro.LikesList;
         }
 
         [HttpGet("con/{id}")]
-        public async Task<ActionResult<int>> GetConLikes(int id)
+        public async Task<ActionResult<IEnumerable<Like>>> GetConLikes(int id)
         {
             var con = _context.Con
                 .Include(r => r.LikesList)
@@ -49,7 +49,7 @@ namespace Backend.Controllers
                 return NotFound();
             }
 
-            return con.LikesList.Count;
+            return con.LikesList;
         }
 
         [HttpPost("pro")]
@@ -62,9 +62,12 @@ namespace Backend.Controllers
 
             var likedAlready = pro.LikesList.SingleOrDefault(r => r.UserId == userId);
             
-            if (likedAlready!= null)
+            if (likedAlready != null)
             {
-                return BadRequest();
+                var existingLike = await _context.Likes.FindAsync(likedAlready.Id);
+                _context.Likes.Remove(existingLike);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
             
             var like = new Like
@@ -88,9 +91,12 @@ namespace Backend.Controllers
             
             var likedAlready = con.LikesList.SingleOrDefault(r => r.UserId == userId);
             
-            if (likedAlready!= null)
+            if (likedAlready != null)
             {
-                return BadRequest();
+                var existingLike = await _context.Likes.FindAsync(likedAlready.Id);
+                _context.Likes.Remove(existingLike);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
 
             var like = new Like
@@ -103,22 +109,6 @@ namespace Backend.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetConLikes", new { id = userId }, like);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var like = await _context.Likes.FindAsync(id);
-
-            if (like == null)
-            {
-                return NotFound();
-            }
-
-            _context.Likes.Remove(like);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
     }
 }
