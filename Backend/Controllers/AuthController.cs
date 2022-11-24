@@ -28,8 +28,8 @@ public class Auth:ControllerBase
         {
             try
             {
-                var result = await HttpContext.GetTokenAsync(GoogleDefaults.AuthenticationScheme);
-
+                var result = HttpContext.Request.Headers.Authorization;
+                //
                 // var claims = result.Principal.Identities.FirstOrDefault()
                 //     .Claims.Select(claim => new
                 //     {
