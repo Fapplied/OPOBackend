@@ -1,6 +1,10 @@
 using Backend.Data;
 using Backend.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Google;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,14 +22,20 @@ builder.Services.AddDbContext<OPODB>(options =>
 var configuration = builder.Configuration;
 var services = builder.Services;
 
-services.AddAuthentication().AddGoogle(googleOptions =>
+services.AddAuthentication((options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    }) 
+    ).AddGoogle(googleOptions =>
 {
     googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
     googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
     googleOptions.CallbackPath = configuration["Authentication:Google:CallbackPath"];
 });
 
-services.AddIdentity<User, User>();
+
+// services.AddIdentity<User, User>();
 
 
 var app = builder.Build();
@@ -39,7 +49,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction() )
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAuthorization();
+// app.UseAuthorization();
 
 app.MapControllers();
 

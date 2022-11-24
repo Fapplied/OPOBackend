@@ -41,7 +41,7 @@ public class Auth:ControllerBase
                         claim.Value
                     });
 
-                return Ok(claims);
+                return Ok(result);
             }
             catch (Exception e)
             {
