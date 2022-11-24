@@ -28,18 +28,18 @@ public class Auth:ControllerBase
         {
             try
             {
-                var result = await HttpContext.AuthenticateAsync();
+                var result = HttpContext;
 
-                var claims = result.Principal.Identities.FirstOrDefault()
-                    .Claims.Select(claim => new
-                    {
-                        claim.Properties,
-                        claim.Subject,
-                        claim.Issuer,
-                        claim.OriginalIssuer,
-                        claim.Type,
-                        claim.Value
-                    });
+                // var claims = result.Principal.Identities.FirstOrDefault()
+                //     .Claims.Select(claim => new
+                //     {
+                //         claim.Properties,
+                //         claim.Subject,
+                //         claim.Issuer,
+                //         claim.OriginalIssuer,
+                //         claim.Type,
+                //         claim.Value
+                //     });
 
                 return Ok(result);
             }
