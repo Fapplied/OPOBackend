@@ -6,7 +6,7 @@ namespace Backend.Models;
 public class User
 {
     public int UserId { get; set; } = default!;
-
+    public string GoogleId { get; set; }
     public string Name { get; set; }
 
     public ProfilePicture? ProfilePicture { get; set; }

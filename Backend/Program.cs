@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OPODB>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OPODB") ?? throw new InvalidOperationException("Connection string 'OPODB' not found.")));
 
+
 var configuration = builder.Configuration;
 var services = builder.Services;
 
@@ -51,6 +52,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction() )
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 // app.UseAuthorization();
+
+app.UseCors(builder =>
+{
+    builder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+});
 
 app.MapControllers();
 
