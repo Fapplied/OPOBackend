@@ -1,7 +1,7 @@
 using Backend.Data;
 using Backend.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+// using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
@@ -26,7 +26,7 @@ var services = builder.Services;
 
 services.AddAuthentication((options =>
     {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        // options.DefaultScheme = GoogleDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
     })
 ).AddGoogle(googleOptions =>
@@ -34,7 +34,7 @@ services.AddAuthentication((options =>
     googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
     googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
     googleOptions.CallbackPath = configuration["Authentication:Google:CallbackPath"];
-}).AddIdentityCookies();
+});
 
 
 // services.AddIdentity<User, User>();
@@ -53,9 +53,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 // app.UseAuthorization();
 
-app.UseCors(builder =>
+app.UseCors(builderOptions =>
 {
-    builder
+    builderOptions
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader();

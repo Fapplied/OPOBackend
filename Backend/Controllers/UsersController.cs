@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
 using Backend.Service;
+using Microsoft.AspNetCore.Cors;
 
 namespace Backend.Controllers
 {
+    [EnableCors] 
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -45,11 +47,18 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(AddUserRequest addUserRequest)
         {
-            await VerifyToken.VerifyGoogleTokenId(addUserRequest.Token);
-            // return Ok(test);
-            if (_context.User.SingleOrDefault(r => r.GoogleId == addUserRequest.GoogleId) != null)
+            var verifyGoogleTokenId = await VerifyToken.VerifyGoogleTokenId(addUserRequest.Token);
+
+            if (verifyGoogleTokenId.Type == "Error")
             {
-               return Ok();
+                return BadRequest(verifyGoogleTokenId);
+            }
+
+            var userInfo = _context.User.SingleOrDefault(r => r.GoogleId == addUserRequest.GoogleId);
+            // return Ok(test);
+            if (userInfo != null)
+            {
+               return Ok(userInfo);
             }
             
             var user = new User
