@@ -43,11 +43,11 @@ namespace Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProblemDTO>> GetProblem(int id)
         {
-            var problem = _context.Problem
+            var problem = await _context.Problem
                 .Include(r => r.User)
                 .Include(r => r.ConList)
                 .Include(r => r.ProList)
-                .SingleOrDefault(r => r.ProblemId == id);
+                .Where(r => r.User.UserId == id).FirstOrDefaultAsync();
 
             if (problem == null)
             {
