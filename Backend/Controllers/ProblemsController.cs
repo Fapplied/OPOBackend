@@ -47,7 +47,7 @@ namespace Backend.Controllers
                 .Include(r => r.User)
                 .Include(r => r.ConList)
                 .Include(r => r.ProList)
-                .Where(r => r.User.UserId == id).FirstOrDefaultAsync();
+                .Where(r => r.ProblemId == id).FirstOrDefaultAsync();
 
             if (problem == null)
             {
