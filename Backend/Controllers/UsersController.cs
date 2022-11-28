@@ -64,11 +64,13 @@ namespace Backend.Controllers
             var user = new User
             {
                 GoogleId = addUserRequest.GoogleId,
-                Name = addUserRequest.Name
+                Name = addUserRequest.Name,
             };
             
             _context.User.Add(user);
             await _context.SaveChangesAsync();
+
+            user.ProfilePicture = new ProfilePicture() { Id = user.UserId, Url = verifyGoogleTokenId.Picture };
             return CreatedAtAction("GetUser", new { id = user.UserId }, user);
         }
 

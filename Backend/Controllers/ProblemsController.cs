@@ -4,6 +4,7 @@ using Backend.Data;
 using Backend.Models;
 using System.Text.Json;
 using System.Net.Http.Headers;
+using Backend.Service;
 
 namespace Backend.Controllers
 {
@@ -90,17 +91,52 @@ namespace Backend.Controllers
             return CreatedAtAction("GetProblem", new { id = problem.ProblemId }, problem);
         }
         
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProblem(int id)
+        [HttpDelete("{problemId}")]
+        public async Task<IActionResult> DeleteProblem(int problemId)
         {
-            var problem = await _context.Problem.FindAsync(id);
-
-            if (problem == null)
+            
+            var problem = _context.Problem.Where((problem => problem.ProblemId == problemId)).FirstOrDefault();
+            if (problem is null)
             {
                 return NotFound();
             }
 
+            var pros = _context.Pro.Where((pro => pro.Problem.ProblemId == problemId)).ToList();
+            var cons =  _context.Con.Where((con => con.Problem.ProblemId == problemId)).ToList();
+            if (pros.Any())
+            {
+                var proLikes = pros.Where(pro => pro.LikesList.FindAll(like => like.ProId == pro.ProId).Any()).Select(pro=>pro.LikesList).ToList();
+                if (proLikes.Any())
+                {
+                    Console.WriteLine("HEEELLLLLOOOOO THEEE PROLIKES IS");
+                    Console.WriteLine("LENGTH = " + proLikes.Count() + " First Value is ==> " + proLikes.FirstOrDefault());
+                    foreach (var propsLike in proLikes)
+                    {
+                        _context.Likes.RemoveRange(propsLike);
+
+                    }
+                }
+                _context.Pro.RemoveRange(pros);
+                await _context.SaveChangesAsync();
+
+            }
+
+            if (cons.Any())
+            {
+                var conLikes = cons.SelectMany(con => con.LikesList).Where(like=> like.ConId > 0 );
+
+                if (conLikes.Any())
+                {
+                    _context.Likes.RemoveRange(conLikes);
+                }
+                
+                
+                _context.Con.RemoveRange(cons);
+                await _context.SaveChangesAsync();
+            }
+            
             _context.Problem.Remove(problem);
+            
             await _context.SaveChangesAsync();
 
             return NoContent();
