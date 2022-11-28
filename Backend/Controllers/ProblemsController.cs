@@ -40,6 +40,28 @@ namespace Backend.Controllers
                 ConList = GetCons().Where(r => r.ProblemId == result.ProblemId).ToList()
             });
         }
+        
+        [HttpGet("user/{id}")]
+        public async Task<IEnumerable<ProblemDTO>> GetUserProblems(int id)
+        {        
+                var problem = await _context.Problem
+                    .Include(r => r.User)
+                    .Include(r => r.ProList)
+                    .Include(r => r.ConList)
+                    .Where(r=>r.User.UserId == id)
+                    .ToListAsync();
+
+                return problem.Select(result => new ProblemDTO
+                {
+                    ProblemId = result.ProblemId,
+                    UserId = result.User.UserId,
+                    Title = result.Title,
+                    ProList = GetPros().Where(r => r.ProblemId == result.ProblemId).ToList(),
+                    ConList = GetCons().Where(r => r.ProblemId == result.ProblemId).ToList()
+                });
+            
+        }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProblemDTO>> GetProblem(int id)
