@@ -21,17 +21,31 @@ public class OPODB:DbContext
     public Microsoft.EntityFrameworkCore.DbSet<User> User { get; set; } = default!;
     public Microsoft.EntityFrameworkCore.DbSet<ProfilePicture> ProfilePicture { get; set; } = default!;
     public Microsoft.EntityFrameworkCore.DbSet<Problem> Problem { get; set; } = default!;
-    // public DbSet<ProLike> ProLike { get; set;  }
-    // public DbSet<ConLike> ConLike { get; set;  }
     public Microsoft.EntityFrameworkCore.DbSet<Pro> Pro { get; set;  }
     public Microsoft.EntityFrameworkCore.DbSet<Con> Con { get; set;  }
-    public Microsoft.EntityFrameworkCore.DbSet<Like> Likes { get; set; }
+    public Microsoft.EntityFrameworkCore.DbSet<ProLike> ProLike { get; set; }
+    public Microsoft.EntityFrameworkCore.DbSet<ConLike> ConLike { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.Entity<Problem>()
+            .HasMany(a => a.ProList).WithOne(a => a.Problem)
+            .HasForeignKey(a => a.ProblemId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<Pro>()
+            .HasMany(a => a.LikesList).WithOne(a => a.Pro)
+            .HasForeignKey(a => a.ProId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<Con>()
+            .HasMany(a => a.LikesList).WithOne(a => a.Con)
+            .HasForeignKey(a => a.ConId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
     
-    // protected override void OnModelCreating(ModelBuilder builder)
-    // {   
-    //     builder.Entity<Problem>()
-    //         .HasOptional(a => a.UserDetail)
-    //         .WithOptionalDependent()
-    //         .WillCascadeOnDelete(true);
-    // }
+    
+    
+    
+    
 }

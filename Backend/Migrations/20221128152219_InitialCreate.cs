@@ -27,6 +27,7 @@ namespace Backend.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GoogleId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfilePictureId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -66,8 +67,9 @@ namespace Backend.Migrations
                 {
                     ConId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProblemId = table.Column<int>(type: "int", nullable: true)
+                    ProblemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,7 +78,8 @@ namespace Backend.Migrations
                         name: "FK_Con_Problem_ProblemId",
                         column: x => x.ProblemId,
                         principalTable: "Problem",
-                        principalColumn: "ProblemId");
+                        principalColumn: "ProblemId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -85,8 +88,9 @@ namespace Backend.Migrations
                 {
                     ProId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProblemId = table.Column<int>(type: "int", nullable: true)
+                    ProblemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,31 +99,48 @@ namespace Backend.Migrations
                         name: "FK_Pro_Problem_ProblemId",
                         column: x => x.ProblemId,
                         principalTable: "Problem",
-                        principalColumn: "ProblemId");
+                        principalColumn: "ProblemId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Likes",
+                name: "ConLike",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ConId = table.Column<int>(type: "int", nullable: true),
-                    ProId = table.Column<int>(type: "int", nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ConId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
+                    table.PrimaryKey("PK_ConLike", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_Con_ConId",
+                        name: "FK_ConLike_Con_ConId",
                         column: x => x.ConId,
                         principalTable: "Con",
-                        principalColumn: "ConId");
+                        principalColumn: "ConId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProLike",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ProId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProLike", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_Pro_ProId",
+                        name: "FK_ProLike_Pro_ProId",
                         column: x => x.ProId,
                         principalTable: "Pro",
-                        principalColumn: "ProId");
+                        principalColumn: "ProId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -128,14 +149,9 @@ namespace Backend.Migrations
                 column: "ProblemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_ConId",
-                table: "Likes",
+                name: "IX_ConLike_ConId",
+                table: "ConLike",
                 column: "ConId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Likes_ProId",
-                table: "Likes",
-                column: "ProId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pro_ProblemId",
@@ -148,6 +164,11 @@ namespace Backend.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProLike_ProId",
+                table: "ProLike",
+                column: "ProId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_ProfilePictureId",
                 table: "User",
                 column: "ProfilePictureId");
@@ -156,7 +177,10 @@ namespace Backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Likes");
+                name: "ConLike");
+
+            migrationBuilder.DropTable(
+                name: "ProLike");
 
             migrationBuilder.DropTable(
                 name: "Con");

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(OPODB))]
-    [Migration("20221124140527_UpdatedUserClass")]
-    partial class UpdatedUserClass
+    [Migration("20221128152219_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,9 @@ namespace Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("ConId");
 
                     b.HasIndex("ProblemId");
@@ -46,7 +49,7 @@ namespace Backend.Migrations
                     b.ToTable("Con");
                 });
 
-            modelBuilder.Entity("Backend.Models.Like", b =>
+            modelBuilder.Entity("Backend.Models.ConLike", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,10 +57,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("ConId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProId")
+                    b.Property<int>("ConId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -67,9 +67,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("ConId");
 
-                    b.HasIndex("ProId");
-
-                    b.ToTable("Likes");
+                    b.ToTable("ConLike");
                 });
 
             modelBuilder.Entity("Backend.Models.Pro", b =>
@@ -86,6 +84,9 @@ namespace Backend.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("ProId");
 
@@ -133,6 +134,27 @@ namespace Backend.Migrations
                     b.ToTable("ProfilePicture");
                 });
 
+            modelBuilder.Entity("Backend.Models.ProLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ProId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProId");
+
+                    b.ToTable("ProLike");
+                });
+
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -141,8 +163,9 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"), 1L, 1);
 
-                    b.Property<int>("GoogleId")
-                        .HasColumnType("int");
+                    b.Property<string>("GoogleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -169,15 +192,15 @@ namespace Backend.Migrations
                     b.Navigation("Problem");
                 });
 
-            modelBuilder.Entity("Backend.Models.Like", b =>
+            modelBuilder.Entity("Backend.Models.ConLike", b =>
                 {
-                    b.HasOne("Backend.Models.Con", null)
+                    b.HasOne("Backend.Models.Con", "Con")
                         .WithMany("LikesList")
-                        .HasForeignKey("ConId");
+                        .HasForeignKey("ConId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Backend.Models.Pro", null)
-                        .WithMany("LikesList")
-                        .HasForeignKey("ProId");
+                    b.Navigation("Con");
                 });
 
             modelBuilder.Entity("Backend.Models.Pro", b =>
@@ -200,6 +223,17 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.ProLike", b =>
+                {
+                    b.HasOne("Backend.Models.Pro", "Pro")
+                        .WithMany("LikesList")
+                        .HasForeignKey("ProId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pro");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>

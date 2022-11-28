@@ -17,13 +17,13 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Like>> GetLikes()
+        public async Task<IEnumerable<ProLike>> GetLikes()
         {
-            return await _context.Likes.ToListAsync();
+            return await _context.ProLike.ToListAsync();
         }
 
         [HttpGet("pro/{id}")]
-        public async Task<ActionResult<IEnumerable<Like>>> GetProLikes(int id)
+        public async Task<ActionResult<IEnumerable<ProLike>>> GetProLikes(int id)
         {
             var pro = _context.Pro
                 .Include(r => r.LikesList)
@@ -38,7 +38,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("con/{id}")]
-        public async Task<ActionResult<IEnumerable<Like>>> GetConLikes(int id)
+        public async Task<ActionResult<IEnumerable<ConLike>>> GetConLikes(int id)
         {
             var con = _context.Con
                 .Include(r => r.LikesList)
@@ -53,7 +53,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("pro")]
-        public async Task<ActionResult<Like>> PostProLike(int proId, int userId)
+        public async Task<ActionResult<ProLike>> PostProLike(int proId, int userId)
         {
             var pro = _context.Pro
                 .Include(r => r.LikesList)
@@ -64,13 +64,13 @@ namespace Backend.Controllers
             
             if (likedAlready != null)
             {
-                var existingLike = await _context.Likes.FindAsync(likedAlready.Id);
-                _context.Likes.Remove(existingLike);
+                var existingLike = await _context.ProLike.FindAsync(likedAlready.Id);
+                _context.ProLike.Remove(existingLike);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
             
-            var like = new Like
+            var like = new ProLike
             {
                 UserId = userId
             };
@@ -82,7 +82,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("con")]
-        public async Task<ActionResult<Like>> PostConLike(int conId, int userId)
+        public async Task<ActionResult<ConLike>> PostConLike(int conId, int userId)
         {
             var con = _context.Con
                 .Include(r => r.LikesList)
@@ -93,13 +93,13 @@ namespace Backend.Controllers
             
             if (likedAlready != null)
             {
-                var existingLike = await _context.Likes.FindAsync(likedAlready.Id);
-                _context.Likes.Remove(existingLike);
+                var existingLike = await _context.ConLike.FindAsync(likedAlready.Id);
+                _context.ConLike.Remove(existingLike);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }
 
-            var like = new Like
+            var like = new ConLike
             {
                 UserId = userId
             };

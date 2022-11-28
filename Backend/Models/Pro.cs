@@ -11,7 +11,8 @@ public class Pro
 
     public string Title { get; set; } = default!;
     
+    public int ProblemId { get; set; } = default!;
     public Problem Problem { get; set; } = default!;
 
-    public List<Like>? LikesList { get; set; }
+    public List<ProLike>? LikesList { get; set; }
 }

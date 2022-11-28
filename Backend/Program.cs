@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,9 @@ builder.Services.AddControllers()
 // builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OPODB>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("OPODB") ?? throw new InvalidOperationException("Connection string 'OPODB' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OPODB") ?? throw new InvalidOperationException("Connection string 'OPODB' not found."))
+);
+
 
 
 var configuration = builder.Configuration;

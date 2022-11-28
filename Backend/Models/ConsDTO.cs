@@ -6,5 +6,5 @@ public class ConsDTO
     public string Title { get; set; } = default!;
     public int ProblemId { get; set; }
     public string ProblemTitle { get; set; } = default!;
-    public List<Like>? LikesList { get; set; }
+    public List<ProLike>? LikesList { get; set; }
 }

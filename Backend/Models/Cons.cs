@@ -10,5 +10,5 @@ public class Con
     
     public Problem Problem { get; set; } = default!;
 
-    public List<Like>? LikesList { get; set; }
+    public List<ConLike>? LikesList { get; set; }
 }

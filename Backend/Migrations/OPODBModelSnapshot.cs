@@ -47,7 +47,7 @@ namespace Backend.Migrations
                     b.ToTable("Con");
                 });
 
-            modelBuilder.Entity("Backend.Models.Like", b =>
+            modelBuilder.Entity("Backend.Models.ConLike", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,10 +55,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("ConId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProId")
+                    b.Property<int>("ConId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -68,9 +65,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("ConId");
 
-                    b.HasIndex("ProId");
-
-                    b.ToTable("Likes");
+                    b.ToTable("ConLike");
                 });
 
             modelBuilder.Entity("Backend.Models.Pro", b =>
@@ -137,6 +132,27 @@ namespace Backend.Migrations
                     b.ToTable("ProfilePicture");
                 });
 
+            modelBuilder.Entity("Backend.Models.ProLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ProId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProId");
+
+                    b.ToTable("ProLike");
+                });
+
             modelBuilder.Entity("Backend.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -174,15 +190,15 @@ namespace Backend.Migrations
                     b.Navigation("Problem");
                 });
 
-            modelBuilder.Entity("Backend.Models.Like", b =>
+            modelBuilder.Entity("Backend.Models.ConLike", b =>
                 {
-                    b.HasOne("Backend.Models.Con", null)
+                    b.HasOne("Backend.Models.Con", "Con")
                         .WithMany("LikesList")
-                        .HasForeignKey("ConId");
+                        .HasForeignKey("ConId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Backend.Models.Pro", null)
-                        .WithMany("LikesList")
-                        .HasForeignKey("ProId");
+                    b.Navigation("Con");
                 });
 
             modelBuilder.Entity("Backend.Models.Pro", b =>
@@ -205,6 +221,17 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Models.ProLike", b =>
+                {
+                    b.HasOne("Backend.Models.Pro", "Pro")
+                        .WithMany("LikesList")
+                        .HasForeignKey("ProId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pro");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
