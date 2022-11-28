@@ -80,7 +80,8 @@ namespace Backend.Controllers
 
             var pro = new Pro
             {
-                Title = problemTitleToBeAdded
+                Title = problemTitleToBeAdded,
+                UserId = addProRequest.UserId
             };
             
             problem.ProList.Add(pro);

@@ -35,6 +35,8 @@ namespace Backend.Controllers
         {
            var result = await BlobFunctions.Post(formFile, id);
            
+           
+           
            return CreatedAtAction("PostProfilePicture", new ProfilePicture(){Id = id, Url = result});
         }
 

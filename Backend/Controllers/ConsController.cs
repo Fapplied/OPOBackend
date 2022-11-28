@@ -83,7 +83,8 @@ namespace Backend.Controllers
             
             var con = new Con
             {
-                Title = problemTitleToBeAdded
+                Title = problemTitleToBeAdded,
+                UserId = addConRequest.UserId
             };
             
             problem.ConList.Add(con);

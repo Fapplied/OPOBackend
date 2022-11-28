@@ -6,6 +6,8 @@ namespace Backend.Models;
 public class Pro
 {
     public int ProId { get; set; }
+    
+    public int UserId { get; set; }
 
     public string Title { get; set; } = default!;
     

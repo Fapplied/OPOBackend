@@ -58,6 +58,8 @@ namespace Backend.Service
                 return noContainer;
             }
             var res = containerClient.GetBlobsAsync();
+            var uriAbsoluteUri = containerClient.Uri.AbsoluteUri;
+            
             var resList = new List<string?>();
             await foreach (var blobItem in res)
             {

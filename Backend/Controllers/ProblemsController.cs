@@ -117,51 +117,69 @@ namespace Backend.Controllers
         public async Task<IActionResult> DeleteProblem(int problemId)
         {
             
-            var problem = _context.Problem.Where((problem => problem.ProblemId == problemId)).FirstOrDefault();
+            var problem = _context.Problem
+                .Include(r => r.ProList)
+                .Include(r => r.ConList)
+                .Include(r=> r.ProList)
+                .FirstOrDefault( r => r.ProblemId == problemId);
+            
+            var pros = _context.Pro.Where(r => r.Problem.ProblemId == problemId).ToList();
+            var cons = _context.Pro.Where(r => r.Problem.ProblemId == problemId).ToList();
+
+            var proLikes = pros.Select(r => r.LikesList);
+            var conLikes = cons.Select(r => r.LikesList);
+                
+                // var like = _context.Likes.Where(r => r.)
+
             if (problem is null)
             {
                 return NotFound();
             }
-
-            var pros = _context.Pro.Where((pro => pro.Problem.ProblemId == problemId)).ToList();
-            var cons =  _context.Con.Where((con => con.Problem.ProblemId == problemId)).ToList();
-            if (pros.Any())
-            {
-                var proLikes = pros.Where(pro => pro.LikesList.FindAll(like => like.ProId == pro.ProId).Any()).Select(pro=>pro.LikesList).ToList();
-                if (proLikes.Any())
-                {
-                    Console.WriteLine("HEEELLLLLOOOOO THEEE PROLIKES IS");
-                    Console.WriteLine("LENGTH = " + proLikes.Count() + " First Value is ==> " + proLikes.FirstOrDefault());
-                    foreach (var propsLike in proLikes)
-                    {
-                        _context.Likes.RemoveRange(propsLike);
-
-                    }
-                }
-                _context.Pro.RemoveRange(pros);
-                await _context.SaveChangesAsync();
-
-            }
-
-            if (cons.Any())
-            {
-                var conLikes = cons.SelectMany(con => con.LikesList).Where(like=> like.ConId > 0 );
-
-                if (conLikes.Any())
-                {
-                    _context.Likes.RemoveRange(conLikes);
-                }
-                
-                
-                _context.Con.RemoveRange(cons);
-                await _context.SaveChangesAsync();
-            }
             
             _context.Problem.Remove(problem);
-            
             await _context.SaveChangesAsync();
 
             return NoContent();
+
+            // var pros = _context.Pro.Where((pro => pro.Problem.ProblemId == problemId)).ToList();
+            // var cons =  _context.Con.Where((con => con.Problem.ProblemId == problemId)).ToList();
+            // if (pros.Any())
+            // {
+            //     var proLikes = pros.Where(pro => pro.LikesList.FindAll(like => like.ProId == pro.ProId).Any()).Select(pro=>pro.LikesList).ToList();
+            //     if (proLikes.Any())
+            //     {
+            //         Console.WriteLine("HEEELLLLLOOOOO THEEE PROLIKES IS");
+            //         Console.WriteLine("LENGTH = " + proLikes.Count() + " First Value is ==> " + proLikes.FirstOrDefault());
+            //         foreach (var propsLike in proLikes)
+            //         {
+            //             _context.Likes.RemoveRange(propsLike);
+            //
+            //         }
+            //     }
+            //     _context.Pro.RemoveRange(pros);
+            //     await _context.SaveChangesAsync();
+
+        // }
+
+            // if (cons.Any())
+            // {
+            //     var conLikes = cons.SelectMany(con => con.LikesList).Where(like=> like.ConId > 0 );
+            //
+            //     if (conLikes.Any())
+            //     {
+            //         _context.Likes.RemoveRange(conLikes);
+            //     }
+            //     
+            //     
+            //     _context.Con.RemoveRange(cons);
+            //     await _context.SaveChangesAsync();
+            // }
+            //
+            // _context.Problem.Remove(problem);
+            //
+            // await _context.SaveChangesAsync();
+            //
+            // return NoContent();
         }
 
         private List<ProDTO> GetPros()
