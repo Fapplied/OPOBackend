@@ -65,7 +65,7 @@ namespace Backend.Service
             {
                 if (blobItem.Name.Split('.')[0].Equals(userId.ToString()))
                 {
-                    resList.Add(blobItem.Name);
+                    resList.Add(containerClient.Uri.AbsoluteUri + "/" + blobItem.Name);
                 }
             }
             
