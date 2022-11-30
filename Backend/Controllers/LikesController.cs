@@ -22,6 +22,21 @@ namespace Backend.Controllers
             return await _context.ProLike.ToListAsync();
         }
 
+        [HttpGet("all/{problemid}")]
+        public async Task<ActionResult<LikesCount>> GetAllProLikes(int problemid)
+        {
+            var allPros = _context.Pro.Where(pro => pro.Problem.ProblemId == problemid);
+            var allProLikesForProblem = allPros.SelectMany((pro) => _context.ProLike.Where(proLike => proLike.ProId == pro.ProId)).Count();
+            
+            var allCons = _context.Con.Where(con => con.Problem.ProblemId == problemid);
+            var allConLikesForProblem = allCons.SelectMany((con) => _context.ConLike.Where(conLike => conLike.ConId == con.ConId)).Count();
+
+            var dto = new LikesCount() { ProLikes = allProLikesForProblem, ConLikes = allConLikesForProblem };
+            return Ok(dto);
+        }
+
+
+
         [HttpGet("pro/{id}")]
         public async Task<ActionResult<IEnumerable<ProLike>>> GetProLikes(int id)
         {
