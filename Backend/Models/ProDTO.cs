@@ -7,4 +7,5 @@ public class ProDTO
     public int ProblemId { get; set; }
     public string ProblemTitle { get; set; } = default!;
     public List<ProLike>? LikesList { get; set; }
+    public int UserId { get; set; }
 }

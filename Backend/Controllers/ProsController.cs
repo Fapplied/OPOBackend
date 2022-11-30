@@ -51,6 +51,8 @@ namespace Backend.Controllers
                 Title = pro.Title,
                 ProblemId = pro.Problem.ProblemId,
                 ProblemTitle = pro.Problem.Title,
+                UserId = pro.UserId
+                
             };
         }
 
