@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
 using Backend.Service;
+using Backend.Controllers;
 
 namespace Backend.Controllers
 {
@@ -34,10 +35,17 @@ namespace Backend.Controllers
         public async Task<ActionResult<ProfilePicture>> PostProfilePicture(IFormFile formFile, int id)
         {
            var result = await BlobFunctions.Post(formFile, id);
-           
-           
-           
-           return CreatedAtAction("PostProfilePicture", new ProfilePicture(){Id = id, Url = result});
+
+          var existingUser = _context.User.FirstOrDefault(u => u.UserId == id);
+          
+
+          if (existingUser != null)
+          {
+              existingUser.ProfilePicture = new ProfilePicture {  Url = result };
+              await _context.SaveChangesAsync();
+          }
+          
+          return CreatedAtAction("PostProfilePicture", new ProfilePicture{Id = id, Url = result});
         }
 
         [HttpDelete("{id}")]
