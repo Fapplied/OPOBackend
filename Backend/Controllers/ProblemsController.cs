@@ -98,13 +98,24 @@ namespace Backend.Controllers
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("X-Api-Key", "ki87/fB/+CD6T2m272XIaQ==6N0tIqo70E4D5GFc");
-            var safeText =  await  client.GetStreamAsync(URL + addProblemRequest.Title);
-            var profanityApiResponse = await JsonSerializer.DeserializeAsync<ProfanityApiResponse>(safeText);
+            var problemTitleToBeAdded = "";
+            try
+            {
+                var safeText =  await  client.GetStreamAsync(URL + addProblemRequest.Title);
+                var profanityApiResponse = await JsonSerializer.DeserializeAsync<ProfanityApiResponse>(safeText);
+                problemTitleToBeAdded = profanityApiResponse?.Text;
 
+            }
+            catch (Exception e)
+            {
+                problemTitleToBeAdded = addProblemRequest.Title;
+
+            }
+            
 
             var problem = new Problem
             {
-                Title = profanityApiResponse.Text
+                Title = problemTitleToBeAdded
             };
         
             user.ProblemList.Add(problem);
