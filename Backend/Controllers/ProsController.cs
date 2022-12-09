@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Models;
 using System.Text.Json;
+using Backend.Service;
 
 
 namespace Backend.Controllers
@@ -62,27 +63,12 @@ namespace Backend.Controllers
             var problem = _context.Problem
                 .Include(r => r.ProList)
                 .Single(r => r.ProblemId == problemId);
-            
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("X-Api-Key", "ki87/fB/+CD6T2m272XIaQ==6N0tIqo70E4D5GFc");
-            var problemTitleToBeAdded = "";
-            try
-            {
-                var safeText =  await  client.GetStreamAsync(URL + addProRequest.Advantage);
-                var profanityApiResponse = await JsonSerializer.DeserializeAsync<ProfanityApiResponse>(safeText);
-                problemTitleToBeAdded = profanityApiResponse?.Text;
-            }
-            catch (Exception e)
-            {
-                problemTitleToBeAdded = addProRequest.Advantage;
-            }
-          
 
-            var pro = new Pro
+            var proToBeAdded = await profanityNinja.ninja(addProRequest.Advantage);
+
+         var pro = new Pro
             {
-                Title = problemTitleToBeAdded,
+                Title = proToBeAdded,
                 UserId = addProRequest.UserId
             };
             

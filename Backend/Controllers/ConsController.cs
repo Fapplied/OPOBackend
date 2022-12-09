@@ -4,6 +4,7 @@ using Backend.Data;
 using Backend.Models;
 using System.Text.Json;
 using System.Net.Http.Headers;
+using Backend.Service;
 
 namespace Backend.Controllers
 {
@@ -13,8 +14,7 @@ namespace Backend.Controllers
     {
         private readonly OPODB _context;
         
-        private const string URL = "https://api.api-ninjas.com/v1/profanityfilter?text=";
-
+        
 
         public ConsController(OPODB context)
         {
@@ -66,21 +66,7 @@ namespace Backend.Controllers
                 .Include(r => r.ConList)
                 .Single(r => r.ProblemId == problemId);
             
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("X-Api-Key", "ki87/fB/+CD6T2m272XIaQ==6N0tIqo70E4D5GFc");
-            var problemTitleToBeAdded = "";
-            try
-            {
-                var safeText =  await  client.GetStreamAsync(URL + addConRequest.Disadvantage);
-                var profanityApiResponse = await JsonSerializer.DeserializeAsync<ProfanityApiResponse>(safeText);
-                problemTitleToBeAdded = profanityApiResponse?.Text;
-            }
-            catch (Exception e)
-            {
-                problemTitleToBeAdded = addConRequest.Disadvantage;
-            }
+            var problemTitleToBeAdded = await profanityNinja.ninja(addConRequest.Disadvantage);
             
             var con = new Con
             {
