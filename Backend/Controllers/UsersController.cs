@@ -55,7 +55,7 @@ namespace Backend.Controllers
             }
 
             var userInfo = _context.User.SingleOrDefault(r => r.GoogleId == addUserRequest.GoogleId);
-            // return Ok(test);
+            
             if (userInfo != null)
             {
                return Ok(userInfo);
