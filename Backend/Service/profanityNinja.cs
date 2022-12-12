@@ -10,10 +10,13 @@ public static class profanityNinja
 
     public static async Task<string> ninja(string inputValue)
     {
+         string? apikey = System.Environment.GetEnvironmentVariable("APIKEY");
+        
         var client = new HttpClient();
         client.DefaultRequestHeaders.Accept.Clear();
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        client.DefaultRequestHeaders.Add("X-Api-Key", "ki87/fB/+CD6T2m272XIaQ==6N0tIqo70E4D5GFc");
+        client.DefaultRequestHeaders.Add("X-Api-Key", apikey );
+           
            
         try
         {
