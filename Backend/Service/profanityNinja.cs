@@ -10,7 +10,7 @@ public static class profanityNinja
 
     public static async Task<string> ninja(string inputValue)
     {
-         string? apikey = System.Environment.GetEnvironmentVariable("APIKEY");
+        string? apikey = System.Environment.GetEnvironmentVariable("CUSTOMCONNSTR_APIKEY", EnvironmentVariableTarget.Process);
         
         var client = new HttpClient();
         client.DefaultRequestHeaders.Accept.Clear();
