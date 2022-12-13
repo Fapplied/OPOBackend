@@ -19,7 +19,7 @@ builder.Services.AddControllers()
 // builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OPODB>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("OPODB") ?? throw new InvalidOperationException("Connection string 'OPODB' not found."))
+    options.UseSqlServer(System.Environment.GetEnvironmentVariable("SQLAZURECONNSTR_SQLCONNECTIONSTRING", EnvironmentVariableTarget.Process) ?? throw new InvalidOperationException("Connection string 'OPODB' not found."))
 );
 
 
