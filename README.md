@@ -1,2 +1,2 @@
-# OPO
-Others peoples opinions an website for getting peoples opinions with pros and cons.
+# OPO (Others Peoples Opinions) 
+A website for getting peoples opinions with pros and cons.
